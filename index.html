@@ -267,8 +267,11 @@
     // ==========================================
     
     // GASのURL
-    const GAS_URL = "https://script.google.com/macros/s/xxxxxxxxxxxxxxxxx/exec";
-
+    const PART_A = "https://script.google.com/macros/s/";
+    const PART_B = "AKfycbzgjjUvAN6fgufcz7grvA5FyfVe8OmyXfm0BMcUOKxAywLcFDxLaZ7jA1MURjh_STco";
+    const PART_C = "/exec";
+    const GAS_URL = PART_A + PART_B + PART_C;
+    
     // 乱数の最大値（1〜MAX_SCORE）
     const MAX_SCORE = 30;
 
