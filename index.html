@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>キャッパーおみくじ2026</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Kaisei+Opti&family=M+PLUS+Rounded+1c:wght@700&family=Zen+Kurenaido&display=swap");
+    </style>
+    <style>
+        /* --- 変数定義 --- */
+        :root {
+            --bg-color: #d2ffd27e;
+            --main-font: "arial black", sans-serif;
+            --accent-color: #ff0800;
+            --input-width: 190px;
+        }
+
+        /* --- 基本設定 --- */
+        body {
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 0;
+            font-family: var(--main-font);
+            color: #333;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .hidden { display: none !important; }
+
+        /* コンテナ */
+        #main-container {
+            position: relative;
+            width: 10.0cm;
+            height: 11.0cm;
+            background-color: #ffffff;
+            max-width: 100%;
+        }
+
+        /* --- 画面共通レイアウト --- */
+        #input-screen, #result-screen {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        /* 枠線設定 */
+        .frame-border {
+            position: absolute;
+            pointer-events: none;
+        }
+        #frame-input {
+            width: 10.05cm;
+            height: 11.05cm;
+            border: 2px solid #000;
+            top: -2.5px; left: -2.5px;
+        }
+        #frame-result {
+            width: 6.3cm;
+            height: 10.05cm;
+            border: 2px solid #000;
+            top: -2.5px; left: -2.5px;
+        }
+        #frame-result2 {
+            width: 5.7cm;
+            height: 9.55cm;
+            border: 3px solid #ff0000;
+            top: 0.225cm; left: 0.2cm;
+            z-index: 10;
+        }
+
+        /* 結果画面のコンテナ調整 */
+        #result-screen {
+            width: 6.0cm;
+            margin: auto;
+            top: 0.5cm;
+        }
+
+        /* --- パーツデザイン --- */
+        .HNYbox {
+            width: 6.5cm;
+            height: 2.5cm;
+            background-color: #ffaeae;
+            position: absolute;
+            top: 0.5cm; left: 0; right: 0; margin: auto;
+            border-radius: 0.2cm;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 50;
+        }
+        .HNYbox .text {
+            font-size: 0.8cm;
+            font-weight: bold;
+            text-align: center;
+            line-height: 1.1;
+        }
+
+        .rotate_kuji {
+            rotate: -5deg;
+            position: absolute;
+            top: 0.4cm; left: 1.0cm;
+            z-index: 100;
+        }
+        .hutasensei {
+            position: absolute;
+            top: 3.2cm; left: 0.8cm;
+            z-index: 100;
+        }
+
+        #address_l {
+            position: absolute;
+            top: 3.5cm; right: 0.4cm;
+            font-size: 0.52cm;
+            text-align: center;
+        }
+        #address_c {
+            position: absolute;
+            top: 6.5cm; width: 100%;
+            font-size: 0.52cm;
+            text-align: center;
+        }
+
+        /* 入力エリア */
+        .input-area {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+        }
+
+        .input-group {
+            pointer-events: auto;
+            position: absolute;
+            bottom: 1.5cm;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        input[type="text"] {
+            border: #000 2px solid;
+            border-radius: 5px;
+            font-size: 15px;
+            padding: 5px;
+            width: var(--input-width);
+        }
+
+        /* ボタン共通 */
+        button {
+            pointer-events: auto;
+            cursor: pointer;
+            transition: 0.2s;
+            border: #000 2px solid;
+            border-radius: 2px;
+            font-size: 15px;
+        }
+        button:hover {
+            opacity: 0.8;
+        }
+
+        #playButton {
+            position: absolute;
+            bottom: 0.3cm; left: 0; right: 0; margin: auto;
+            background-color: #eeff00;
+            width: 200px;
+            height: 34px;
+        }
+
+        #back-btn {
+            position: absolute;
+            bottom: 1.5cm; left: 0; right: 0; margin: auto;
+            width: 120px;
+            height: 30px;
+            z-index: 30;
+        }
+
+        /* --- 結果テキスト --- */
+        #omikuji-msg {
+            color: var(--accent-color);
+            font-family: "HiraMinProN-W6", "Zen Kurenaido", sans-serif;
+            position: absolute;
+            top: 1.2cm; left: 0.4cm;
+            width: 100%;
+            font-size: 0.55cm;
+            text-align: left;
+            z-index: 20;
+            font-weight: bold;
+            line-height: 1.3;
+        }
+        #msg {
+            color: #000;
+            font-family: var(--main-font);
+            position: absolute;
+            bottom: 2.8cm;
+            width: 100%;
+            font-size: 0.45cm;
+            text-align: center;
+            z-index: 20;
+        }
+
+        /* スマホ対応（縮小） */
+        @media screen and (max-width: 500px) {
+            #main-container {
+                transform: scale(0.85);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="main-container">
+        
+        <div id="input-screen">
+            <div id="frame-input" class="frame-border"></div>
+
+            <div class="HNYbox">
+                <div class="text">キャッパー<br>おみくじ</div>
+            </div>
+
+            <div class="rotate_kuji">
+                <img src="image/omikuji.png" width="105px" alt="おみくじ" onerror="this.style.display='none'">
+            </div>
+            <div class="hutasensei">
+                <img src="image/hutasensei.jpg" width="100px" alt="先生" onerror="this.style.display='none'">
+            </div>
+
+            <div id="address_l">
+                くじを引く人の<br>名前を入れて<br>今年の運勢を占おう！
+            </div>
+
+            <div id="address_c">
+                ３打席勝負だ！全力で来い！
+            </div>
+
+            <div class="input-area">
+                <form id="omikuji-form">
+                    <div class="input-group">
+                        <input type="text" id="name" name="name" placeholder="名前" required>
+                    </div>
+                    <button type="submit" id="playButton">おみくじを引く</button>
+                </form>
+            </div>
+        </div>
+
+        <div id="result-screen" class="hidden">
+            <div id="frame-result" class="frame-border"></div>
+            <div id="frame-result2" class="frame-border"></div>
+
+            <div id="omikuji-msg">結果待ち...</div>
+            <div id="msg"></div>
+
+            <button id="back-btn" onclick="location.reload()">もう一度</button>
+        </div>
+
+    </div>
+
+<script>
+    // ==========================================
+    //  設定エリア
+    // ==========================================
+    
+    // GASのURL
+    const GAS_URL = "https://script.google.com/macros/s/xxxxxxxxxxxxxxxxx/exec";
+
+    // 乱数の最大値（1〜MAX_SCORE）
+    const MAX_SCORE = 30;
+
+    // 打席結果の判定ロジック（閾値が高い順に記述）
+    const BATTING_RESULTS = [
+        { min: 29, text: "ホームラン" },
+        { min: 28, text: "3BH" },
+        { min: 23, text: "2BH" },
+        { min: 19, text: "1BH" },
+        { min: 17, text: "ゴロアウト" },
+        { min: 13, text: "フライアウト" },
+        { min: 8,  text: "見逃し三振" },
+        { min: 0,  text: "空振り三振" } // デフォルト
+    ];
+
+    // 総合評価とアドバイス（閾値が高い順に記述）
+    const ADVICE_RESULTS = [
+        { 
+            min: 90, 
+            msg: "神がかり！素晴らしい<br>この調子で突き進め！", 
+            item: "ウィッフルバット" 
+        },
+        { 
+            min: 80, 
+            msg: "君はチームの柱だな！<br>更なる高みを目指せ！", 
+            item: "炭酸水" 
+        },
+        { 
+            min: 50, 
+            msg: "まあまあまずまずだな<br>油断せず精進しろッ！", 
+            item: "ユニフォーム" 
+        },
+        { 
+            min: 20, 
+            msg: "まだまだ物足りないぞ<br>死に物狂いで練習ッ！", 
+            item: "体育館シューズ" 
+        },
+        { 
+            min: 10, 
+            msg: "それではチームの足枷だ<br>基礎から鍛え直せッ！！", 
+            item: "ホームベース" 
+        },
+        { 
+            min: 0, 
+            msg: "ダメだダメだ論外だッ！<br>毎日素振りを千回だ！", 
+            item: "10mメジャー" 
+        }
+    ];
+
+    // ==========================================
+    //  メイン処理
+    // ==========================================
+
+    const form = document.getElementById('omikuji-form');
+    const inputScreen = document.getElementById('input-screen');
+    const resultScreen = document.getElementById('result-screen');
+    const playBtn = document.getElementById('playButton');
+
+    // 送信処理
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const nameVal = document.getElementById('name').value;
+        playBtn.disabled = true;
+        playBtn.textContent = "抽選中...";
+
+        // GASへの送信（成功しても失敗しても結果を表示する）
+        const formData = new FormData();
+        formData.append('name', nameVal);
+
+        fetch(GAS_URL, { method: 'POST', body: formData })
+            .then(() => drawOmikuji())
+            .catch(() => drawOmikuji());
+    });
+
+    // おみくじ描画処理
+    function drawOmikuji() {
+        // 画面切り替え
+        inputScreen.classList.add('hidden');
+        resultScreen.classList.remove('hidden');
+
+        // 3打席分のスコア生成 (1〜30)
+        const scores = [
+            1 + Math.floor(Math.random() * MAX_SCORE),
+            1 + Math.floor(Math.random() * MAX_SCORE),
+            1 + Math.floor(Math.random() * MAX_SCORE)
+        ];
+
+        // 各打席の結果を取得
+        const results = scores.map((score, index) => {
+            const resultText = getBattingResult(score);
+            return `${index + 1}打席目: ${resultText}`;
+        });
+
+        // 画面へセット：打席結果
+        const omikujiMsg = document.getElementById("omikuji-msg");
+        omikujiMsg.innerHTML = "運勢<br>" + results.join("<br>");
+
+        // 画面へセット：総合アドバイス
+        const totalScore = scores.reduce((sum, s) => sum + s, 0); // 合計値
+        const advice = getAdvice(totalScore);
+        
+        const msgbox = document.getElementById("msg");
+        msgbox.innerHTML = `${advice.msg}<br><br>【ラッキーアイテム】<br>${advice.item}`;
+    }
+
+    // スコアから打席結果の文字を返す関数
+    function getBattingResult(score) {
+        for (const result of BATTING_RESULTS) {
+            if (score >= result.min) {
+                return result.text;
+            }
+        }
+        return "空振り三振";
+    }
+
+    // 合計スコアからアドバイスを返す関数
+    function getAdvice(score) {
+        for (const data of ADVICE_RESULTS) {
+            if (score >= data.min) {
+                return data;
+            }
+        }
+        return ADVICE_RESULTS[ADVICE_RESULTS.length - 1];
+    }
+
+</script>
+
+</body>
+</html>
